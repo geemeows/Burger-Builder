@@ -1,5 +1,6 @@
 import React from 'react'
 
+import classes from './Layout.module.css'
 const Layout = ({ children }) => (
     <React.Fragment>
         <div>
@@ -7,7 +8,7 @@ const Layout = ({ children }) => (
             02. Sidedrawer
             03. Backdrop
         </div>
-        <main>
+        <main className={classes.main_container}>
             {children}
         </main>
     </React.Fragment>
