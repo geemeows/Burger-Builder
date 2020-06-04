@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import Burger from '@/components/Burger/Burger'
 import BuildControls from '@/components/BuildControls/BuildControls'
+import Modal from '@/components/Modal/Modal'
+import OrderSummary from '@/components/OrderSummary/OrderSummary'
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -18,8 +20,14 @@ class BurgerBuilder extends Component {
             bacon: 0
         },
         totalPrice: 4,
-        canPurchase: false
+        canPurchase: false,
+        showSummaryModal: false,
     }
+
+    showSummary = () => {
+        this.setState({ showSummaryModal: true })
+    }
+
     purchaseCheck = (ingredients) => {
         const sum = Object.keys(ingredients)
             .map(ingredient => ingredients[ingredient])
@@ -52,6 +60,9 @@ class BurgerBuilder extends Component {
         this.purchaseCheck(ingredients)
 
     }
+    clearSummary = () => {
+        this.setState({ showSummaryModal: false })
+    }
     render() {
         const disableInfo = { ...this.state.ingredients }
         Object.keys(disableInfo).forEach(it => {
@@ -59,11 +70,15 @@ class BurgerBuilder extends Component {
         })
         return (
             <React.Fragment>
+                <Modal show={this.state.showSummaryModal} closeSummary={this.clearSummary}>
+                    <OrderSummary ingredients={this.state.ingredients}/>
+                </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
                     addIngredient={this.addNewIngredient}
                     removeIngredient={this.removeIngredient}
                     disableInfo={disableInfo}
+                    displaySummary={this.showSummary}
                     purchasable={this.state.canPurchase}
                     price={this.state.totalPrice}/>
             </React.Fragment>
