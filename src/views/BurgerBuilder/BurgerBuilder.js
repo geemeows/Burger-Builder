@@ -63,6 +63,10 @@ class BurgerBuilder extends Component {
     clearSummary = () => {
         this.setState({ showSummaryModal: false })
     }
+    continuePurchase = () => {
+        alert('PURCHASED!!')
+        this.setState({ showSummaryModal: false })
+    }
     render() {
         const disableInfo = { ...this.state.ingredients }
         Object.keys(disableInfo).forEach(it => {
@@ -71,7 +75,11 @@ class BurgerBuilder extends Component {
         return (
             <React.Fragment>
                 <Modal show={this.state.showSummaryModal} closeSummary={this.clearSummary}>
-                    <OrderSummary ingredients={this.state.ingredients}/>
+                    <OrderSummary 
+                        ingredients={this.state.ingredients}
+                        cancelBehavior={this.clearSummary}
+                        continueBehavior={this.continuePurchase}
+                        price={this.state.totalPrice}/>
                 </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 

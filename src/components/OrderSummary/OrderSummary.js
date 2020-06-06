@@ -1,6 +1,7 @@
 import React from 'react'
 
-const OrderSummary = ({ ingredients }) => {
+import Button from '@/components/Button/Button'
+const OrderSummary = ({ ingredients, cancelBehavior, continueBehavior, price }) => {
     const ingredientsList = Object.keys(ingredients)
         .map(ingredient => (
             <li key={ingredient}>
@@ -14,7 +15,10 @@ const OrderSummary = ({ ingredients }) => {
             <ul>
                 {ingredientsList}
             </ul>
+            <p>Your subtotal: <strong>{price.toFixed(2)}</strong></p>
             <p>Continue to checkout?</p>
+            <Button btnType="Danger" behavior={cancelBehavior}>CANCEL</Button>
+            <Button btnType="Success" behavior={continueBehavior}>CONTINUE</Button>
         </React.Fragment>
     )
 }
