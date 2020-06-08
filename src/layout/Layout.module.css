@@ -5,7 +5,15 @@
 @media (min-width: 786px) {
     .main_container {
         display: flex;
-        height: 94vh;
+        height: calc(100vh - 56px);;
         align-items: center;
     }
+}
+
+@media (max-width: 499px) {
+    .main_container {
+        margin-top: 80px;
+        height: calc(100vh - 330px);
+    }
+    
 }

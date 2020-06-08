@@ -5,7 +5,7 @@ import classes from './Modal.module.css'
 const Modal = ({ children, show, closeSummary }) => {
     return (
         <React.Fragment>
-            <Backdrop show={show} closeModal={closeSummary}/>
+            <Backdrop show={show} dismiss={closeSummary}/>
             <div 
                 className={classes.Modal}
                 style={{

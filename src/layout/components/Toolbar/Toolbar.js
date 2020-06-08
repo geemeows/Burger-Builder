@@ -3,9 +3,13 @@ import React from 'react'
 import Logo from '@/components/Logo/Logo'
 import classes from './Toolbar.module.css'
 import NavigationItems from '../Navigation/Navigation'
-const Toolbar = () => (
+const Toolbar = ({ openDrawer }) => (
     <header className={classes.Toolbar}>
-        <div>MENU</div>
+        <div className={classes.HamburgerIcon} onClick={openDrawer}>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
         <div className={classes.Logo}>
             <Logo />
         </div>

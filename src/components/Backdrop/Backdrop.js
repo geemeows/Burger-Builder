@@ -1,10 +1,10 @@
 import React from 'react'
 
 import classes from './Backdrop.module.css'
-const Backdrop = ({ show, closeModal }) => {
+const Backdrop = ({ show, dismiss }) => {
     return (
         show ? 
-            <div className={classes.Backdrop} onClick={closeModal}></div> : null
+            <div className={classes.Backdrop} onClick={dismiss}></div> : null
     )
 }
 
