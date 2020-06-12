@@ -4,6 +4,8 @@ import Burger from '@/components/Burger/Burger'
 import BuildControls from '@/components/BuildControls/BuildControls'
 import Modal from '@/components/Modal/Modal'
 import OrderSummary from '@/components/OrderSummary/OrderSummary'
+import Spinner from '@/components/Spinner/Spinner'
+import { newOrder } from '@/core/CRUD/crud.services'
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -22,6 +24,7 @@ class BurgerBuilder extends Component {
         totalPrice: 4,
         canPurchase: false,
         showSummaryModal: false,
+        isLoading: false
     }
 
     showSummary = () => {
@@ -64,8 +67,31 @@ class BurgerBuilder extends Component {
         this.setState({ showSummaryModal: false })
     }
     continuePurchase = () => {
-        alert('PURCHASED!!')
-        this.setState({ showSummaryModal: false })
+        this.setState({ isLoading: true })
+        const order = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'Gazouly',
+                address: {
+                    street: 'July 23, st.',
+                    city: 'Edfu',
+                    gov: 'Aswan'
+                },
+                email: 'test@test.com',
+                deliveryMethod: 'fastest'
+            }
+        }
+        newOrder(order)
+            .then(res => {
+                this.setState({ isLoading: false, showSummaryModal: false  })
+                console.log(res)
+                alert('PURCHASED!!')
+            })
+            .catch(err => {
+                this.setState({ isLoading: false, showSummaryModal: false  })
+                console.log(err)
+            })
     }
     render() {
         const disableInfo = { ...this.state.ingredients }
@@ -75,11 +101,16 @@ class BurgerBuilder extends Component {
         return (
             <React.Fragment>
                 <Modal show={this.state.showSummaryModal} closeSummary={this.clearSummary}>
-                    <OrderSummary 
-                        ingredients={this.state.ingredients}
-                        cancelBehavior={this.clearSummary}
-                        continueBehavior={this.continuePurchase}
-                        price={this.state.totalPrice}/>
+                    {
+                        this.state.isLoading ? 
+                            <Spinner /> :                     
+                            <OrderSummary 
+                                ingredients={this.state.ingredients}
+                                cancelBehavior={this.clearSummary}
+                                continueBehavior={this.continuePurchase}
+                                price={this.state.totalPrice}/>
+                    }
+
                 </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
