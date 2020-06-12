@@ -5,7 +5,9 @@ import BuildControls from '@/components/BuildControls/BuildControls'
 import Modal from '@/components/Modal/Modal'
 import OrderSummary from '@/components/OrderSummary/OrderSummary'
 import Spinner from '@/components/Spinner/Spinner'
-import { newOrder } from '@/core/CRUD/crud.services'
+import ErrorHandler from '@/HoC/ErrorHandler'
+import { serverHttp } from '@/core/httpClient'
+import { newOrder, getIngredients } from '@/core/CRUD/crud.services'
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -15,16 +17,23 @@ const INGREDIENT_PRICES = {
 }
 class BurgerBuilder extends Component {
     state = {
-        ingredients: {
-            meat: 0,
-            cheese: 0,
-            salad: 0,
-            bacon: 0
-        },
+        ingredients: null,
         totalPrice: 4,
         canPurchase: false,
         showSummaryModal: false,
-        isLoading: false
+        isLoading: false,
+        error: false
+    }
+
+    componentDidMount() {
+        getIngredients()
+            .then(({ data }) => {
+                this.setState({ ingredients: data })
+            })
+            .catch(err => {
+                this.setState({ error: true })
+                console.log(err)
+            })
     }
 
     showSummary = () => {
@@ -86,7 +95,6 @@ class BurgerBuilder extends Component {
             .then(res => {
                 this.setState({ isLoading: false, showSummaryModal: false  })
                 console.log(res)
-                alert('PURCHASED!!')
             })
             .catch(err => {
                 this.setState({ isLoading: false, showSummaryModal: false  })
@@ -104,25 +112,40 @@ class BurgerBuilder extends Component {
                     {
                         this.state.isLoading ? 
                             <Spinner /> :                     
-                            <OrderSummary 
+                            (this.state.ingredients ? 
+                                <OrderSummary 
                                 ingredients={this.state.ingredients}
                                 cancelBehavior={this.clearSummary}
                                 continueBehavior={this.continuePurchase}
-                                price={this.state.totalPrice}/>
+                                price={this.state.totalPrice}/> :
+                                null
+                            )
                     }
 
                 </Modal>
-                <Burger ingredients={this.state.ingredients}/>
-                <BuildControls 
-                    addIngredient={this.addNewIngredient}
-                    removeIngredient={this.removeIngredient}
-                    disableInfo={disableInfo}
-                    displaySummary={this.showSummary}
-                    purchasable={this.state.canPurchase}
-                    price={this.state.totalPrice}/>
+                {
+                    this.state.ingredients ? 
+                        <React.Fragment>
+                            <Burger ingredients={this.state.ingredients}/>
+                            <BuildControls 
+                                addIngredient={this.addNewIngredient}
+                                removeIngredient={this.removeIngredient}
+                                disableInfo={disableInfo}
+                                displaySummary={this.showSummary}
+                                purchasable={this.state.canPurchase}
+                                price={this.state.totalPrice}/>
+                        </React.Fragment> :
+                        (
+                            this.state.error ?
+                                <p>App cannot get ingredients from server</p> :
+                                <Spinner />
+                        )
+
+                }
+
             </React.Fragment>
         )
     }
 }
 
-export default BurgerBuilder
+export default ErrorHandler(BurgerBuilder, serverHttp)
