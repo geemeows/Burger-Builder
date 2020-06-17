@@ -1,11 +1,11 @@
 .main_container {
-    margin-top: 65px;
+    margin-top: 56px;
 }
 
 @media (min-width: 786px) {
     .main_container {
         /* display: flex; */
-        height: calc(100vh - 65px);;
+        height: calc(100vh - 56px);;
         align-items: center;
     }
 }

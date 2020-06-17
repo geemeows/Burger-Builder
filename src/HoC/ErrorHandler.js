@@ -11,7 +11,7 @@ const ErrorHandler = (ChildComponent, httpClient) => {
             httpClient.interceptors.request.eject(this.reqInterceptors)
             httpClient.interceptors.response.eject(this.resInterceptors)
         }
-        componentWillMount () {
+        UNSAFE_componentWillMount () {
             this.reqInterceptors = httpClient.interceptors.request.use(req => {
                 this.setState({ error: null })
                 return req

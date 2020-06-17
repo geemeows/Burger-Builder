@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 
 import Burger from '@/components/Burger/Burger'
 import BuildControls from '@/components/BuildControls/BuildControls'
@@ -7,7 +8,7 @@ import OrderSummary from '@/components/OrderSummary/OrderSummary'
 import Spinner from '@/components/Spinner/Spinner'
 import ErrorHandler from '@/HoC/ErrorHandler'
 import { serverHttp } from '@/core/httpClient'
-import { newOrder, getIngredients } from '@/core/CRUD/crud.services'
+import { getIngredients } from '@/core/CRUD/crud.services'
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -76,30 +77,17 @@ class BurgerBuilder extends Component {
         this.setState({ showSummaryModal: false })
     }
     continuePurchase = () => {
-        this.setState({ isLoading: true })
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Gazouly',
-                address: {
-                    street: 'July 23, st.',
-                    city: 'Edfu',
-                    gov: 'Aswan'
-                },
-                email: 'test@test.com',
-                deliveryMethod: 'fastest'
-            }
+        const queryParams = []
+        const { ingredients } = this.state
+        for (let ingredient in ingredients) {
+            queryParams.push(`${encodeURIComponent(ingredient)}=${encodeURIComponent(ingredients[ingredient])}`)
         }
-        newOrder(order)
-            .then(res => {
-                this.setState({ isLoading: false, showSummaryModal: false  })
-                console.log(res)
-            })
-            .catch(err => {
-                this.setState({ isLoading: false, showSummaryModal: false  })
-                console.log(err)
-            })
+        queryParams.push(`price=${this.state.totalPrice}`)
+        const queryString = queryParams.join('&')
+        this.props.history.push({
+            pathname: '/checkout',
+            search: `?${queryString}`
+        })
     }
     render() {
         const disableInfo = { ...this.state.ingredients }
@@ -148,4 +136,4 @@ class BurgerBuilder extends Component {
     }
 }
 
-export default ErrorHandler(BurgerBuilder, serverHttp)
+export default ErrorHandler(withRouter(BurgerBuilder), serverHttp)
