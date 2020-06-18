@@ -21,6 +21,7 @@ export default class ContactData extends Component {
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.price,
+            deliveryMethod: 'fastest',
             customer: {
                 name: 'Gazouly',
                 address: {
@@ -29,7 +30,6 @@ export default class ContactData extends Component {
                     gov: 'Aswan'
                 },
                 email: 'test@test.com',
-                deliveryMethod: 'fastest'
             }
         }
         newOrder(order)

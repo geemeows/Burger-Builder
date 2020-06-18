@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 
 import Button from '@/components/Button/Button'
 class OrderSummary extends Component {
-
-    componentDidUpdate() {
-        console.log('[OrderSummary] OrderSummaryDidUpdate!!')
-    }
     render () {
         const { ingredients, cancelBehavior, continueBehavior, price } = this.props
         const ingredientsList = Object.keys(ingredients)

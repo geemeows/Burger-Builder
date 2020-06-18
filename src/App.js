@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import BurgerBuilder from '@/views/BurgerBuilder/BurgerBuilder'
 import Checkout from '@/views/Checkout/Checkout'
+import Orders from '@/views/Orders/Orders'
 
 export default class App extends Component {
   render() {
@@ -16,6 +17,9 @@ export default class App extends Component {
           <Switch>
             <Route path="/checkout">
               <Checkout />
+            </Route>
+            <Route path="/orders">
+              <Orders />
             </Route>
             <Route path="/">
               <BurgerBuilder />
