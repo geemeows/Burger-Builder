@@ -3,34 +3,39 @@ import React, { Component } from 'react'
 import Button from '@/components/Button/Button'
 import classes from './ContactData.module.css'
 import Spinner from '@/components/Spinner/Spinner'
+import Input from '@/components/Input/Input'
 import { newOrder } from '@/core/CRUD/crud.services'
 
+const createFormElement = (type, config, value = '') => ({ 
+    elementType: type,
+    elementConfig: config,
+    value
+})
 export default class ContactData extends Component {
     state = {
-        name: '',
-        email: '',
-        address: {
-            street: '',
-            postalCode: ''
+        orderForm: {
+            name: createFormElement('input', { name: 'name', type: 'text', placeholder: 'Your Name' }),
+            street: createFormElement('input', { name:'street', type: 'text', placeholder: 'Your Street' }),
+            zipCode: createFormElement('input', { name:'zip', type: 'text', placeholder: 'Your ZIP Code' }),
+            country: createFormElement('input', { name:'country', type: 'text', placeholder: 'Your Country' }),
+            email: createFormElement('email', { name:'email', type: 'email', placeholder: 'Your Email' }),
+            deliveryMethod: createFormElement('select', 
+                {   name:'delivery', 
+                    options: [
+                        { name: 'Fastest', value: 'fastest'},
+                        { name: 'Cheapest', value: 'cheapest'}
+                    ] 
+                })
         },
         isLoading: false
     }
+
     createOrder = (e) => {
         e.preventDefault()
         this.setState({ isLoading: true })
         const order = {
             ingredients: this.props.ingredients,
-            price: this.props.price,
-            deliveryMethod: 'fastest',
-            customer: {
-                name: 'Gazouly',
-                address: {
-                    street: 'July 23, st.',
-                    city: 'Edfu',
-                    gov: 'Aswan'
-                },
-                email: 'test@test.com',
-            }
+            price: this.props.price
         }
         newOrder(order)
             .then(res => {
@@ -44,7 +49,20 @@ export default class ContactData extends Component {
             })
     }
 
+    updateInput = (e, key) => {
+        const updatedOrderForm = { ...this.state.orderForm}
+        updatedOrderForm[key].value = e.target.value
+        this.setState({ orderForm: updatedOrderForm })
+    }
+
     render() {
+        const form = []
+        for (let key in this.state.orderForm) {
+            form.push({
+                id: key,
+                config: {...this.state.orderForm[key]}
+            })
+        }
         return (
             <div className={classes.ContactData}>
                 {
@@ -54,10 +72,17 @@ export default class ContactData extends Component {
                         <React.Fragment>
                             <h4>Enter your contact data</h4>
                             <form>
-                                <input className={classes.Input} type="text" name="name" placeholder="Your Name"/>
-                                <input className={classes.Input} type="email" name="email" placeholder="Your Email"/>
-                                <input className={classes.Input} type="text" name="street" placeholder="Your Street"/>
-                                <input className={classes.Input} type="text" name="postal" placeholder="Your Postal Code"/>
+                                {
+                                    form.map((el) => (
+                                        <Input 
+                                            key={el.id}
+                                            elementType={el.config.elementType} 
+                                            elementConfig={el.config.elementConfig} 
+                                            value={el.config.value} 
+                                            update={(e) => this.updateInput(e, el.id)}/>
+                                    ))
+                                }
+                                
                                 <Button btnType="Success" behavior={this.createOrder}>ORDER NOW!</Button>
                             </form>
                         </React.Fragment>

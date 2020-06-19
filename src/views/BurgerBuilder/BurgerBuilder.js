@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component, Suspense } from 'react'
 import { withRouter } from 'react-router-dom'
 
 import Burger from '@/components/Burger/Burger'
 import BuildControls from '@/components/BuildControls/BuildControls'
-import Modal from '@/components/Modal/Modal'
 import OrderSummary from '@/components/OrderSummary/OrderSummary'
 import Spinner from '@/components/Spinner/Spinner'
 import ErrorHandler from '@/HoC/ErrorHandler'
 import { serverHttp } from '@/core/httpClient'
 import { getIngredients } from '@/core/CRUD/crud.services'
 
+const Modal = React.lazy(() => import('@/components/Modal/Modal'))
 const INGREDIENT_PRICES = {
     salad: 0.5,
     cheese: 0.4,
@@ -96,21 +96,23 @@ class BurgerBuilder extends Component {
         })
         return (
             <React.Fragment>
-                <Modal show={this.state.showSummaryModal} closeSummary={this.clearSummary}>
-                    {
-                        this.state.isLoading ? 
-                            <Spinner /> :                     
-                            (this.state.ingredients ? 
-                                <OrderSummary 
-                                ingredients={this.state.ingredients}
-                                cancelBehavior={this.clearSummary}
-                                continueBehavior={this.continuePurchase}
-                                price={this.state.totalPrice}/> :
-                                null
-                            )
-                    }
+                <Suspense fallback={<div>Loading ...</div>}>
+                    <Modal show={this.state.showSummaryModal} closeSummary={this.clearSummary}>
+                        {
+                            this.state.isLoading ? 
+                                <Spinner /> :                     
+                                (this.state.ingredients ? 
+                                    <OrderSummary 
+                                    ingredients={this.state.ingredients}
+                                    cancelBehavior={this.clearSummary}
+                                    continueBehavior={this.continuePurchase}
+                                    price={this.state.totalPrice}/> :
+                                    null
+                                )
+                        }
 
-                </Modal>
+                    </Modal>
+                </Suspense>
                 {
                     this.state.ingredients ? 
                         <React.Fragment>
