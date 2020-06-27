@@ -29,7 +29,7 @@ const ErrorHandler = (ChildComponent, httpClient) => {
                         >
                         { this.state.error ? this.state.error.message : null }
                     </Modal>
-                    <ChildComponent />
+                    <ChildComponent {...this.props} />
                 </React.Fragment>
             )
         }
