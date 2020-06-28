@@ -46,17 +46,18 @@ class BurgerBuilder extends Component {
         this.setState({ showSummaryModal: false })
     }
     continuePurchase = () => {
-        const queryParams = []
-        const { ingredients } = this.state
-        for (let ingredient in ingredients) {
-            queryParams.push(`${encodeURIComponent(ingredient)}=${encodeURIComponent(ingredients[ingredient])}`)
-        }
-        queryParams.push(`price=${this.props.totalPrice}`)
-        const queryString = queryParams.join('&')
-        this.props.history.push({
-            pathname: '/checkout',
-            search: `?${queryString}`
-        })
+        // const queryParams = []
+        // const { ingredients } = this.state
+        // for (let ingredient in ingredients) {
+        //     queryParams.push(`${encodeURIComponent(ingredient)}=${encodeURIComponent(ingredients[ingredient])}`)
+        // }
+        // queryParams.push(`price=${this.props.totalPrice}`)
+        // const queryString = queryParams.join('&')
+        // this.props.history.push({
+        //     pathname: '/checkout',
+        //     search: `?${queryString}`
+        // })
+        this.props.history.push('/checkout')
     }
     render() {
         const disableInfo = { ...this.props.ingredients }

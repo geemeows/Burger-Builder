@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import Button from '@/components/Button/Button'
 import classes from './ContactData.module.css'
@@ -14,7 +16,7 @@ const createFormElement = ({ type, config, validations, value = '', valid = fals
     valid,
     touched
 })
-export default class ContactData extends Component {
+class ContactData extends Component {
     state = {
         orderForm: {
             name: createFormElement({ 
@@ -86,7 +88,7 @@ export default class ContactData extends Component {
         const order = {
             orderData,
             ingredients: this.props.ingredients,
-            price: this.props.price
+            price: this.props.totalPrice
         }
         newOrder(order)
             .then(res => {
@@ -155,3 +157,11 @@ export default class ContactData extends Component {
         )
     }
 }
+const mapStateToProps = state => {
+    return {
+        ingredients: state.ingredients,
+        totalPrice: state.totalPrice
+    }
+}
+
+export default connect(mapStateToProps)(withRouter(ContactData))
